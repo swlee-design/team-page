@@ -1,3 +1,5 @@
+import ConsultationModal from './components/ConsultationModal';
+
 export default function Home() {
   const services = [
     {
@@ -69,7 +71,7 @@ export default function Home() {
               업무 안내
             </a>
             <a
-              href="mailto:sw.lee@wyattcorp.com"
+              href="#contact"
               className="bg-[#9146FF] hover:bg-[#7D2FE0] text-white px-4 py-1.5 rounded transition-colors"
             >
               문의하기
@@ -162,25 +164,7 @@ export default function Home() {
                   채용, 교육, 조직문화, 평가보상 관련 문의를 편하게 남겨주세요.
                 </p>
               </div>
-              <a
-                href="mailto:sw.lee@wyattcorp.com"
-                className="shrink-0 inline-flex items-center gap-2 bg-[#9146FF] hover:bg-[#7D2FE0] text-white font-bold px-8 py-4 rounded transition-colors"
-              >
-                문의하기
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
+              <ConsultationModal />
             </div>
           </div>
         </section>
