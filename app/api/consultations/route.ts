@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { getDb } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -12,13 +12,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const sql = getDb();
     const result = await sql`
       INSERT INTO consultations (name, email, department, type, content)
       VALUES (${name}, ${email}, ${department ?? ''}, ${type}, ${content})
       RETURNING id, created_at
     `;
 
-    return NextResponse.json({ success: true, id: result.rows[0].id }, { status: 201 });
+    return NextResponse.json({ success: true, id: result[0].id }, { status: 201 });
   } catch (err) {
     console.error('[POST /api/consultations]', err);
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
@@ -27,12 +28,13 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
+    const sql = getDb();
     const result = await sql`
       SELECT id, name, email, department, type, content, created_at
       FROM consultations
       ORDER BY created_at DESC
     `;
-    return NextResponse.json(result.rows);
+    return NextResponse.json(result);
   } catch (err) {
     console.error('[GET /api/consultations]', err);
     return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });

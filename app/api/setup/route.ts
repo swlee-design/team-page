@@ -1,8 +1,9 @@
-import { sql } from '@vercel/postgres';
+import { getDb } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
+    const sql = getDb();
     await sql`
       CREATE TABLE IF NOT EXISTS consultations (
         id         SERIAL PRIMARY KEY,

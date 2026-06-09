@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { getDb } from '@/lib/db';
 
 const TYPE_COLORS: Record<string, string> = {
   '교육':        'bg-blue-500/20 text-blue-300 border-blue-500/30',
@@ -8,12 +8,12 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 async function getConsultations() {
-  const result = await sql`
+  const sql = getDb();
+  return await sql`
     SELECT id, name, email, department, type, content, created_at
     FROM consultations
     ORDER BY created_at DESC
   `;
-  return result.rows;
 }
 
 export default async function AdminPage() {
@@ -54,48 +54,38 @@ export default async function AdminPage() {
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6">
               <p className="text-sm text-[#ADADB8]">
                 총 <span className="text-[#9146FF] font-bold">{consultations.length}건</span>
               </p>
             </div>
-
             <div className="flex flex-col gap-3">
               {consultations.map((c) => (
                 <div
-                  key={c.id}
+                  key={c.id as number}
                   className="bg-[#18181B] border border-[#2D2D35] rounded-lg p-5 hover:border-[#9146FF]/50 transition-colors"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-bold text-[#EFEFF1]">{c.name}</span>
+                      <span className="font-bold text-[#EFEFF1]">{c.name as string}</span>
                       {c.department && (
                         <span className="text-xs text-[#848494] bg-[#1F1F23] border border-[#2D2D35] rounded px-2 py-0.5">
-                          {c.department}
+                          {c.department as string}
                         </span>
                       )}
-                      <span
-                        className={`text-xs border rounded px-2 py-0.5 ${
-                          TYPE_COLORS[c.type] ?? 'bg-[#1F1F23] text-[#ADADB8] border-[#2D2D35]'
-                        }`}
-                      >
-                        {c.type}
+                      <span className={`text-xs border rounded px-2 py-0.5 ${TYPE_COLORS[c.type as string] ?? 'bg-[#1F1F23] text-[#ADADB8] border-[#2D2D35]'}`}>
+                        {c.type as string}
                       </span>
                     </div>
                     <span className="text-xs text-[#848494]">
-                      {new Date(c.created_at).toLocaleString('ko-KR')}
+                      {new Date(c.created_at as string).toLocaleString('ko-KR')}
                     </span>
                   </div>
-
-                  <a
-                    href={`mailto:${c.email}`}
-                    className="text-sm text-[#9146FF] hover:underline mb-3 block"
-                  >
-                    {c.email}
+                  <a href={`mailto:${c.email}`} className="text-sm text-[#9146FF] hover:underline mb-3 block">
+                    {c.email as string}
                   </a>
-
                   <p className="text-sm text-[#ADADB8] leading-relaxed whitespace-pre-wrap">
-                    {c.content}
+                    {c.content as string}
                   </p>
                 </div>
               ))}
